@@ -117,7 +117,7 @@ values."
                                :size 18
                                :weight normal
                                :width normal
-                               :powerline-scale 1.2)
+                               :powerline-scale 1.3)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -216,14 +216,20 @@ values."
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init'.  You are free to put any
 user code."
-   ;; (setq line-spacing 1.5) ; add 0.5 height between lines
-   ; (which-key-setup-side-window-right-bottom)
-  )
+)
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
  This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
+  (with-eval-after-load `linum
+    (global-linum-mode)
+    (linum-relative-on))
+  (which-key-setup-side-window-right-bottom)
+
+  ;; Add line spacing
+  (add-text-properties (point-min) (point-max)
+                       '(line-spacing 0.125 line-height 1.125))
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
