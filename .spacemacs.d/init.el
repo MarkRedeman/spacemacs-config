@@ -24,34 +24,69 @@ values."
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     auto-completion
-     ;; better-defaults
-     emacs-lisp
+     ;; spacemacs-helm
+
+     (auto-completion
+        :variables
+        auto-completion-tab-key-behavior `cycle
+        ;; auto-completion-private-snippets-directory "~/.spacemacs.d/snippets/"
+        :disabled-for erc)
+
      git
-     markdown
-     org
-     ;; (shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
-     ;; spell-checking
-     ;; syntax-checking
-     ;; version-control
+     github
+     (shell :variables
+            shell-default-height 30
+            shell-default-position 'bottom)
+
+     spell-checking
+     syntax-checking
      semantic
-     ranger
+     ;; version-control
+
+     ;; (shell :variables shell-default-shell `eshell)
+     (shell :variables shell-default-term-shell "/usr/bin/fish")
+
+     ;; ranger
      fasd
 
-     c-c++
+     emacs-lisp
+     (c-c++ :variables
+            c-c++-default-mode-for-headers `c++-mode
+            c-c++-enable-clang-support t)
+
+     ;; TAGS
+     gtags
+     cscope
+
+     latex
+     markdown
+     org
+
+     ;; Web
+     html
      php
      javascript
-     extra-langs ;; matlab ?
-     html
-     ;; auctex
+     yaml
      react
 
-     (shell :variables shell-default-shell `eshell)
-     games
+     ;; Provides matlab
+     extra-langs
+
+     vagrant
+     dockerfile
+
 
      themes-megapack
+     command-log
+     spotify
+     emoji
+     xkcd
+     games
+     erc
+     ;; Typing sounds
+     selectric
+
+     ;; elfieed, might be nice
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
