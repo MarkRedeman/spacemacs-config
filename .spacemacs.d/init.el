@@ -42,7 +42,6 @@ values."
      semantic
      ;; version-control
 
-     ;; (shell :variables shell-default-shell `eshell)
      (shell :variables shell-default-term-shell "/usr/bin/fish")
 
      ;; ranger
@@ -68,12 +67,9 @@ values."
      yaml
      react
 
-     ;; Provides matlab
-     extra-langs
-
+     ;; Vitalization
      vagrant
      dockerfile
-
 
      themes-megapack
      command-log
@@ -82,10 +78,21 @@ values."
      xkcd
      games
      erc
+
      ;; Typing sounds
      selectric
 
      ;; elfieed, might be nice
+
+     ;; Personal layers
+     mr-matlab
+     mr-slack
+     mr-pass
+     mr-web
+     mr-org
+     mr-erc
+     mr-cpp
+     mr-js
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -303,37 +310,9 @@ values."
 It is called immediately after `dotspacemacs/init'.  You are free to put any
 user code."
   (setq-default
-   ;; Evil
    evil-shift-round nil
-
-   ;; Ranger
    ;; ranger-override-dired t
-
-   ;; Matlab
-   matlab-auto-fill nil
-   matlab-fill-code nil
-   matlab-functions-have-end t
-   matlab-indent-function-body t
-   matlab-verify-on-save-flag t
-
-   ;; JS
-   js2-basic-offset 2
-   js-indent-level 2
-   ;; web-mode
-   css-indent-offset 2
-   web-mode-markup-indent-offset 2
-   web-mode-css-indent-offset 2
-   web-mode-code-indent-offset 2
-   web-mode-attr-indent-offset 2
-
-   ;; Shell
-   ;; shell-default-term-shell "/bin/zsh"
-
-   ;; IRC
-   erc-autojoin-channels-alist
-   `(("freenode\\.net" "#script?cie" "#qandidate" "#dev-discussions"))
-
-   ;; Misc
+   shell-default-term-shell "/bin/fish"
    indent-tabs-mode nil
    tab-width 4
    )
@@ -343,29 +322,17 @@ user code."
   "Configuration function for user code.
  This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
-  ;; (with-eval-after-load `linum
-  ;;   (global-linum-mode)
-  ;;   (linum-relative-toggle))
-  ;; (which-key-setup-side-window-right-bottom)
-  ;; (spacemacs/toggle-golden-ratio-on)
-  ;; (spacemacs/toggle-vi-tilde-fringe-on)
-
+  (setq create-lockfiles nil)
   (setq indent-line-function `insert-tab)
 
   ;; Add line spacing
   (add-text-properties (point-min) (point-max)
                        '(line-spacing 0.125 line-height 1.125))
 
-  ;; Matlab
-  (setq
-   matlab-indent-function t
-   matlab-shell-command "matlab"
-   matlab-shell-command-switches `("-nodesktop -nosplash"))
-
-  ;; Use react mode for all js based files
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . react-mode))
-
-  ;; Powerline
+  ;; Miscellaneous
+  (add-hook `text-mode-hook `auto-fill-mode)
+  (add-hook `dired-mode-hook `deer)
+  (setq require-final-newline `visit-save)
   (setq powerline-default-separator 'slant)
 
    ;; and change default program to Zathura
@@ -386,75 +353,12 @@ layers configuration. You are free to put any user code."
   ;;                                       helm-source-files-in-current-dir
   ;;                                       ))
   (define-key evil-normal-state-map (kbd "C-p") 'helm-multi-files)
+
   (define-key company-active-map
     (kbd "C-w") `evil-delete-backward-word)
 
-  ;; Miscellaneous
-  (add-hook `text-mode-hook `auto-fill-mode)
-  (add-hook `dired-mode-hook `deer)
-
-  (add-hook 'c++-mode-hook
-            (lambda ()
-              (add-to-list 'company-c-headers-path-system "/usr/include/c++/5/" )
-              (setq-default c-basic-offset 4)
-              (setq-default c-default-style "bsd")
-
-              (global-set-key (kbd "<spc> o =") 'clang-format-region)
-              (setq company-clang-arguments '("-std=c++14"))
-              (setq flycheck-clang-language-standard "c++14")
-              (setq flycheck-gcc-language-standard "c++14")
-              ;; (add-to-list 'company-c-headers-path-system
-                           ;; "/Library/Developer/CommandLineTools/usr/include/c++/v1")
-              ))
-  ;; PHP
-  (add-hook 'php-mode-hook (lambda ()
-                             (spacemacs/set-leader-keys-for-major-mode `php-mode
-                               "t" `phpunit-current-test
-                               "T" `phpunit-current-project)
-  ;;                            (flycheck-select-checker 'php)
-  ;;                            (setq php-mode-coding-style 'PSR-2)
-  ;;                            (setq c-default-style "psr2")
-
-                             ;;              ;; (add-to-list 'company-backends 'company-ac-php-backend )
-                             ;;              (php-enable-psr2-coding-style)
-                             ))
-
-  (add-to-list 'auto-mode-alist '("\\.blade.php\\'" . web-mode))
-
-  ;; IRC
-  (load "~/.ercpass")
-  (setq erc-prompt-for-nickserv-password nil)
-  (setq erc-nickserv-passwords
-        `((freenode (("MarkRedeman" . , freenode-markredeman-password)))))
-  (setq spaceline-toggle-erc-track-on)
-  (add-hook `erc-mode-hook
-        (lambda () (setq-local global-hl-line-mode nil)))
-  (evil-set-initial-state `erc-mode `normal)
-  (setq-default
-        erc-timestamp-format-left )
-
-  (setq-default
-   erc-timestamp-format-left "\n%A %B %e, %Y\n\n"
-   erc-timestamp-format-right "%H:%M"
-   erc-timestamp-right-column 80
-   erc-image-inline-rescale 300
-   erc-hide-list '("JOIN" "PART" "QUIT" "NICK"))
-  (spacemacs|define-custom-layout "@ERC"
-    :binding "E"
-    :body
-    (erc :server "irc.freenode.net" :port "6667" :nick "MarkRedeman" :full-name "Mark Redeman"))
-
-
-  ;; Org-mode
-  ;; https://thraxys.wordpress.com/2016/01/14/pimp-up-your-org-agenda/
-  ;; (setq org-bullets-bullet-list
-  ;;   '("◉" "◎" "⚫" "○" "►" "◇"))
-  ;; (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-  (setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
-    (sequence "⚑ WAITING(w)" "|")
-    (sequence "|" "✘ CANCELED(c)")))
-
-  (setq require-final-newline `visit-save)
+  ;; Modern monitor:
+  ;; (let ((frame-zoom-font-difference 6)) (zoom-frm-in))
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
