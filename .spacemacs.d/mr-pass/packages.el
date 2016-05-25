@@ -10,9 +10,9 @@
 ;; ;;
 ;; ;;; License: GPLv3
 
-(setq pass-packages '(password-store))
+(setq mr-pass-packages '(password-store))
 
-(defun pass/init-password-store ()
+(defun mr-pass/init-password-store ()
   (use-package password-store
     :defer t
     :init
