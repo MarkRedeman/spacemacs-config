@@ -41,7 +41,7 @@
     helm-gtags
     php-auto-yasnippets
     (ede-php-autoload :location (recipe :fetcher github :repo "stevenremot/ede-php-autoload"))
-    ;; (semantic-php :location (recipe :fetcher github :repo "jorissteyn-semantic-php"))
+    (semantic-php :location (recipe :fetcher github :repo "jorissteyn/semantic-php"))
     (php-extras :location (recipe :fetcher github :repo "arnested/php-extras"))
     php-mode
     phpcbf
@@ -73,10 +73,10 @@
               :defer t)
             )))
 
-;; (defun mr-web/init-semantic-php ()
-;;   (use-package semantic-php
-;;     ;; :init (load "~/src/jorissteyn-semantic-php/loaddefs.el")
-;;     :config (add-hook 'php-mode-hook #'semantic-mode)))
+(defun mr-web/init-semantic-php ()
+  (use-package semantic-php
+    ;; :init (load "~/src/jorissteyn-semantic-php/loaddefs.el")
+    :config (add-hook 'php-mode-hook #'semantic-mode)))
 
 (defun mr-web/init-ede-php-autoload-mode ()
   (use-package ede-php-autoload-mode
